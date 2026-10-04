@@ -92,7 +92,7 @@ function sv(){try{localStorage.setItem("lp3",JSON.stringify(S))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
 var API="https://script.google.com/macros/s/AKfycbyUld1CEpRiMsw4t0kE3Ab_4DwraaN4FT094Wy_VcjUhvSH1H6CtDQJ56kfn4ukt-x4/exec";function live(){return API.indexOf("http")==0}
 if(live()){S.ch={cap:0,ref:0,cre:0,tpo:0};S.co={}}
-var src=(new URLSearchParams(location.search).get("src")||"cap");if(!TG[src])src="cap";
+var src=(new URLSearchParams(location.search).get("src")||"direct");if(!TG[src])src="direct";
 function tot(){var t=0;for(var k in S.ch)t+=S.ch[k];return t}
 function pulseR(){var w=S.w;if(!w)return;var t=Math.max(1,w.steps.reduce(function(a,b){return a+b},0));$("pulse").innerHTML=w.steps.map(function(n,i){return"<div style='display:flex;align-items:center;gap:8px;margin:4px 0'><span style='width:90px'>"+ST[i]+"</span><div class=bar style='flex:1'><i style='width:"+(n/t*100)+"%'></i></div><b>"+n+"</b></div>"}).join("")+"<p>🙋 Stuck now: <b>"+w.stuck+"</b> · Projects submitted: <b>"+w.subs+"</b> · Average AI score: <b>"+w.avg+"/25</b></p>"}
 function render(){pulseR();
@@ -101,7 +101,7 @@ $("proj").innerHTML="<b>"+BR[S.br][0]+"</b><br><span class=mu>"+BR[S.br][1]+"</s
 var a=Object.keys(S.co).map(function(k){return[k,S.co[k]]}).sort(function(p,q){return q[1]-p[1]});
 $("lb").innerHTML=a.slice(0,6).map(function(r,i){return"<div><span>"+(i+1)+". "+esc(r[0])+"</span><b>"+r[1]+"</b></div>"}).join("");
 var T=tot();$("pb").style.width=Math.min(100,T/5)+"%";$("pt").textContent=T+" of 500 registered ("+Math.round(T/5)+"%)";
-$("ch").innerHTML="<table style='width:100%;border-collapse:collapse'>"+Object.keys(TG).map(function(k){var p=Math.min(100,S.ch[k]/TG[k][1]*100);return"<tr><td style='padding:6px 8px 6px 0'>"+TG[k][0]+"</td><td style='width:38%'><div class=bar><i style='width:"+p+"%'></i></div></td><td style='padding-left:8px;text-align:right'>"+S.ch[k]+"/"+TG[k][1]+"</td></tr>"}).join("")+"</table>";
+$("ch").innerHTML="<table style='width:100%;border-collapse:collapse'>"+Object.keys(TG).map(function(k){var p=Math.min(100,S.ch[k]/TG[k][1]*100);return"<tr><td style='padding:6px 8px 6px 0'>"+TG[k][0]+"</td><td style='width:38%'><div class=bar><i style='width:"+p+"%'></i></div></td><td style='padding-left:8px;text-align:right'>"+S.ch[k]+"/"+TG[k][1]+"</td></tr>"}).join("")+"</table><p class=mu style='margin:8px 0 0'>Untagged (direct) registrations: "+(S.ch.direct||0)+"</p>";
 if(S.me){$("reg").classList.add("hide");$("done").classList.remove("hide");$("lnk").textContent=link();$("myc").textContent=S.my;
 var L=[[3,"Free AI project starter kit (templates and prompts)"],[7,"Priority seat plus certificate shout-out on LinkedIn"],[12,"Entry into the top-referrer prize draw"]];
 $("tiers").innerHTML=L.map(function(t){return'<div class="tier'+(S.my>=t[0]?' u':'')+'"><b>'+(S.my>=t[0]?"✓":t[0])+"</b><span>"+t[1]+" <span class=mu>("+t[0]+" friends)</span></span></div>"}).join("")}}
@@ -113,8 +113,9 @@ if(t.dataset.t=="o")pull();
 if(t.dataset.b){S.br=t.dataset.b;sv();render()}});
 $("go").onclick=function(){var n=$("nm").value.trim(),c=$("co").value.trim(),w=$("wa").value.trim();
 var m=n.length<2?"Please enter your name.":c.length<3?"Please enter your college name.":!/^[6-9]\d{9}$/.test(w)?"WhatsApp number must be 10 digits and start with 6, 7, 8 or 9.":"";if(m){$("err").textContent=m;return}
-$("err").textContent="";S.me=(n.slice(0,3)+Math.floor(100+Math.random()*900)).toUpperCase().replace(/\s/g,"");
-if(live()){var rf=new URLSearchParams(location.search).get("ref")||"";fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({name:n,college:c,phone:w,branch:S.br,src:src,ref:rf,code:S.me})}).catch(function(){});setTimeout(pull,2000)}else{var k="Demo: "+c;S.co[k]=(S.co[k]||0)+1;S.ch[src]++}sv();render()};
+$("err").textContent="";
+if(live()){var rf=new URLSearchParams(location.search).get("ref")||"";$("go").disabled=true;fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({name:n,college:c,phone:w,branch:S.br,src:src,ref:rf})}).then(function(r){return r.json()}).then(function(r){if(!r.code)throw 0;S.me=r.code;sv();render();pull()}).catch(function(){$("err").textContent="Could not register right now. Please try again.";$("go").disabled=false});return}
+S.me=(n.slice(0,3)+Math.floor(100+Math.random()*900)).toUpperCase().replace(/\s/g,"");var k="Demo: "+c;S.co[k]=(S.co[k]||0)+1;S.ch[src]=(S.ch[src]||0)+1;sv();render()};
 $("wsh").onclick=function(){var m="I just grabbed a free seat for 'Build Your First AI Project in 60 Minutes' by NxtWave. Final-year? Join through my link: "+link();window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank")};
 $("sim").onclick=function(){S.my++;S.ch.ref++;sv();render()};
 $("rs").onclick=function(){try{localStorage.removeItem("lp3")}catch(e){}location.reload()};
