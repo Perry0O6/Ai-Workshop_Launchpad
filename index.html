@@ -60,7 +60,7 @@ input,select,textarea{width:100%;padding:11px;border:1px solid var(--bd);border-
 
 <section id="w" class="hide">
 <div class="card"><h2>Live checkpoint: where are you?</h2>
-<input id="wn" placeholder="Your name">
+<p class="mu" style="margin-top:0">Check in with your registration code. Register in the Student view first.</p>
 <div class="row" id="stp"></div>
 <button class="cta o" id="stk">I'm stuck, send help 🙋</button>
 <p class="mu" id="wm" style="margin:6px 0 0"></p></div>
@@ -92,7 +92,7 @@ function sv(){try{localStorage.setItem("lp3",JSON.stringify(S))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
 var API="https://script.google.com/macros/s/AKfycbyUld1CEpRiMsw4t0kE3Ab_4DwraaN4FT094Wy_VcjUhvSH1H6CtDQJ56kfn4ukt-x4/exec";function live(){return API.indexOf("http")==0}
 if(live()){S.ch={cap:0,ref:0,cre:0,tpo:0};S.co={}}
-var src=(new URLSearchParams(location.search).get("src")||"direct");if(!TG[src])src="direct";
+var src=(new URLSearchParams(location.search).get("src")||"direct");if(!TG[src.replace(/\d+$/,"")])src="direct";
 function tot(){var t=0;for(var k in S.ch)t+=S.ch[k];return t}
 function pulseR(){var w=S.w;if(!w)return;var t=Math.max(1,w.steps.reduce(function(a,b){return a+b},0));$("pulse").innerHTML=w.steps.map(function(n,i){return"<div style='display:flex;align-items:center;gap:8px;margin:4px 0'><span style='width:90px'>"+ST[i]+"</span><div class=bar style='flex:1'><i style='width:"+(n/t*100)+"%'></i></div><b>"+n+"</b></div>"}).join("")+"<p>🙋 Stuck now: <b>"+w.stuck+"</b> · Projects submitted: <b>"+w.subs+"</b> · Average AI score: <b>"+w.avg+"/25</b></p>"}
 function render(){pulseR();
@@ -123,16 +123,16 @@ function pull(){if(!live())return;fetch(API+"?t="+Date.now()).then(function(r){r
 if(live()){$("sim").classList.add("hide");$("lbn").textContent="Top college gets its club featured on NxtWave's channels.";setInterval(pull,20000)}
 var ST=["1 Pick idea","2 Prompt","3 Build","4 Test","5 Share"];
 $("stp").innerHTML=ST.map(function(x,i){return'<button class="br" data-s="'+(i+1)+'">'+x+'</button>'}).join("");
-function nm(){return $("wn").value.trim()||S.me||""}
+function nm(){return S.me||""}
 document.addEventListener("click",function(e){var t=e.target;if(!(t.dataset.s||t.id=="stk"))return;var n=nm();
-if(!n){$("wm").textContent="Enter your name first.";return}if(!live()){$("wm").textContent="Backend not connected yet.";return}
+if(!n){$("wm").textContent="Register first in the Student view.";return}if(!live()){$("wm").textContent="Backend not connected yet.";return}
 if(t.dataset.s)S.step=+t.dataset.s;var st=S.step||1;
 fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"checkin",name:n,step:st,stuck:t.id=="stk"})}).catch(function(){});
 $("wm").textContent=t.id=="stk"?"Mentors can see you are stuck at step "+st+".":"Checked in at step "+st+".";setTimeout(pull,1500)});
 $("ev").onclick=function(){var d=$("pd").value.trim();if(d.length<40){$("evr").textContent="Please describe your project in at least a couple of sentences.";return}
-if(!live()){$("evr").textContent="Backend not connected yet.";return}$("evr").textContent="Evaluating...";
-fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"evaluate",name:nm(),branch:S.br,link:$("pl").value.trim(),desc:d.slice(0,1200)})}).then(function(r){return r.json()}).then(function(r){
-if(r.error){$("evr").textContent="Could not evaluate right now. Try again in a minute.";return}
+if(!S.me){$("evr").textContent="Register first in the Student view.";return}if(!live()){$("evr").textContent="Backend not connected yet.";return}$("evr").textContent="Evaluating...";
+fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"evaluate",code:S.me,branch:S.br,link:$("pl").value.trim(),desc:d.slice(0,1200)})}).then(function(r){return r.json()}).then(function(r){
+if(r.error){$("evr").textContent=r.error=="limit reached"?"You have used your "+2+" AI feedback attempts.":"Could not evaluate right now. Try again in a minute.";return}
 $("evr").innerHTML="<b>Score: "+r.total+" / 25</b><br>"+r.scores.map(function(x){return esc(x[0])+": "+x[1]+"/5"}).join("<br>")+"<p>"+r.tips.map(esc).join("<br>")+"</p>";setTimeout(pull,1500)}).catch(function(){$("evr").textContent="Could not reach the server. Check your connection."})};
 render();pull();
 </script></main></body></html>
