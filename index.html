@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build Your First AI Project in 60 Minutes</title>
+<style>
+:root{--bg:#fafaf7;--card:#fff;--tx:#17181c;--mu:#6b6f7a;--ac:#5b3df5;--ac2:#e8e4ff;--ok:#12a36b;--bd:#e4e4de;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101116;--card:#1a1b22;--tx:#f1f1f4;--mu:#9a9eab;--ac:#8b78ff;--ac2:#2a2550;--bd:#2b2d38}}
+:root[data-theme="dark"]{--bg:#101116;--card:#1a1b22;--tx:#f1f1f4;--mu:#9a9eab;--ac:#8b78ff;--ac2:#2a2550;--bd:#2b2d38}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:clamp(26px,6vw,40px);line-height:1.1;margin:8px 0 10px}h2{font-size:18px;margin:0 0 10px}
+.tag{display:inline-block;background:var(--ac2);color:var(--ac);font-weight:600;font-size:13px;padding:4px 10px;border-radius:99px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:14px 0}
+.mu{color:var(--mu);font-size:14px}
+.tabs{display:flex;gap:8px;margin-bottom:6px}
+button,input,select{font:inherit}
+.tb,.br{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px;cursor:pointer}
+.tb.on,.br.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+input,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);margin:4px 0}
+.cta{width:100%;background:var(--ac);color:#fff;border:0;border-radius:12px;padding:13px;font-weight:700;cursor:pointer;margin-top:8px}
+.cta.g{background:#25d366;color:#04210f}.cta.o{background:var(--ac2);color:var(--ac)}
+.bar{height:12px;background:var(--ac2);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);transition:width .5s}
+.lb div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd)}
+.tier{display:flex;gap:10px;align-items:center;padding:6px 0}.tier b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--bd);font-size:13px}
+.tier.u b{background:var(--ok);color:#fff}.hide{display:none}
+.scroll{overflow-x:auto}
+</style></head><body><main>
+<div class="tabs"><button class="tb on" data-t="s">Student view</button><button class="tb" data-t="o">Organiser view</button></div>
+
+<section id="s">
+<span class="tag">Free workshop · Live · 60 minutes</span>
+<h1>Build Your First AI Project in 60 Minutes</h1>
+<p class="mu">No coding background needed. Leave with a working project you can put on your resume and talk about in placement interviews.</p>
+
+<div class="card"><h2>1 · Pick your branch, see your project</h2>
+<div class="row" id="br"></div>
+<p id="proj" style="margin:12px 0 0"></p></div>
+
+<div class="card" id="reg"><h2>2 · Reserve your free seat</h2>
+<input id="nm" placeholder="Your name" autocomplete="name">
+<input id="co" placeholder="College name" autocomplete="organization">
+<input id="wa" placeholder="WhatsApp number" inputmode="numeric" maxlength="10">
+<button class="cta" id="go">Register free</button>
+<p class="mu" id="err" style="margin:6px 0 0"></p></div>
+
+<div class="card hide" id="done"><h2>You're in 🎉 Now bring your squad</h2>
+<p class="mu">Your link: <b id="lnk"></b></p>
+<button class="cta g" id="wsh">Share on WhatsApp</button>
+<button class="cta o" id="sim">Demo: simulate a friend joining via my link</button>
+<p style="margin:14px 0 4px"><b id="myc">0</b> friends joined</p>
+<div id="tiers"></div></div>
+
+<div class="card"><h2>College leaderboard</h2>
+<p class="mu" style="margin-top:0">Top college gets its club featured on NxtWave's channels. Demo data.</p>
+<div class="lb" id="lb"></div></div>
+</section>
+
+<section id="o" class="hide">
+<div class="card"><h2>Goal: 500 registrations in 7 days</h2>
+<div class="bar"><i id="pb"></i></div>
+<p class="mu" id="pt"></p></div>
+<div class="card"><h2>Registrations by channel</h2><div class="scroll" id="ch"></div>
+<p class="mu">Every link carries a <code>?src=</code> tag, so I can see which channel works by Day 2 and move budget to the winner.</p></div>
+<div class="card"><h2>Budget · ₹2,000</h2>
+<div class="lb"><div><span>Prizes for top college and captains (vouchers)</span><b>₹900</b></div><div><span>3 micro-creator story shout-outs</span><b>₹600</b></div><div><span>Reminder SMS / WhatsApp Business credit</span><b>₹300</b></div><div><span>Buffer for the best-performing channel</span><b>₹200</b></div></div>
+<button class="cta o" id="rs">Reset demo data</button></div>
+</section>
+
+<script>
+var BR={CSE:["Resume-to-role matcher","Paste a job description and get your skill gaps plus a 2-week plan."],ECE:["Sensor anomaly detector","Feed in IoT sensor readings and let AI flag faults before they happen."],Mech:["Defect spotter from photos","Upload part photos and get an AI quality-check report."],Civil:["Crack and damage classifier","Photograph a wall or road and get a severity rating."],Other:["Syllabus study buddy","A chatbot that answers questions from your own notes."]};
+var TG={cap:["Pod captains (club / class WhatsApp groups)",240],ref:["Student referral loop",110],cre:["Micro-creator shout-outs",90],tpo:["TPO and faculty email",60]};
+var SEED={"Demo College A":64,"Demo College B":51,"Demo College C":43,"Demo College D":32,"Demo College E":24};
+var S={reg:0,co:JSON.parse(JSON.stringify(SEED)),ch:{cap:96,ref:41,cre:30,tpo:18},me:null,my:0,br:"CSE"};
+try{var x=localStorage.getItem("lp3");if(x)S=JSON.parse(x)}catch(e){}
+function sv(){try{localStorage.setItem("lp3",JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+var src=(new URLSearchParams(location.search).get("src")||"cap");if(!TG[src])src="cap";
+function tot(){var t=0;for(var k in S.ch)t+=S.ch[k];return t}
+function render(){
+$("br").innerHTML=Object.keys(BR).map(function(k){return '<button class="br'+(k==S.br?' on':'')+'" data-b="'+k+'">'+k+'</button>'}).join("");
+$("proj").innerHTML="<b>"+BR[S.br][0]+"</b><br><span class=mu>"+BR[S.br][1]+"</span>";
+var a=Object.keys(S.co).map(function(k){return[k,S.co[k]]}).sort(function(p,q){return q[1]-p[1]});
+$("lb").innerHTML=a.slice(0,6).map(function(r,i){return"<div><span>"+(i+1)+". "+esc(r[0])+"</span><b>"+r[1]+"</b></div>"}).join("");
+var T=tot();$("pb").style.width=Math.min(100,T/5)+"%";$("pt").textContent=T+" of 500 registered ("+Math.round(T/5)+"%)";
+$("ch").innerHTML="<table style='width:100%;border-collapse:collapse'>"+Object.keys(TG).map(function(k){var p=Math.min(100,S.ch[k]/TG[k][1]*100);return"<tr><td style='padding:6px 8px 6px 0'>"+TG[k][0]+"</td><td style='width:38%'><div class=bar><i style='width:"+p+"%'></i></div></td><td style='padding-left:8px;text-align:right'>"+S.ch[k]+"/"+TG[k][1]+"</td></tr>"}).join("")+"</table>";
+if(S.me){$("reg").classList.add("hide");$("done").classList.remove("hide");$("lnk").textContent=link();$("myc").textContent=S.my;
+var L=[[3,"Free AI project starter kit (templates and prompts)"],[7,"Priority seat plus certificate shout-out on LinkedIn"],[12,"Entry into the top-referrer prize draw"]];
+$("tiers").innerHTML=L.map(function(t){return'<div class="tier'+(S.my>=t[0]?' u':'')+'"><b>'+(S.my>=t[0]?"✓":t[0])+"</b><span>"+t[1]+" <span class=mu>("+t[0]+" friends)</span></span></div>"}).join("")}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function link(){return location.origin+location.pathname+"?src=ref&ref="+S.me}
+document.addEventListener("click",function(e){var t=e.target;
+if(t.dataset.t){["s","o"].forEach(function(k){$(k).classList.toggle("hide",k!=t.dataset.t)});document.querySelectorAll(".tb").forEach(function(b){b.classList.toggle("on",b==t)})}
+if(t.dataset.b){S.br=t.dataset.b;sv();render()}});
+$("go").onclick=function(){var n=$("nm").value.trim(),c=$("co").value.trim(),w=$("wa").value.trim();
+if(n.length<2||c.length<3||!/^[6-9]\d{9}$/.test(w)){$("err").textContent="Please enter your name, college and a valid 10-digit WhatsApp number.";return}
+$("err").textContent="";S.me=(n.slice(0,3)+Math.floor(100+Math.random()*900)).toUpperCase().replace(/\s/g,"");
+var k="Demo: "+c;S.co[k]=(S.co[k]||0)+1;S.ch[src]++;sv();render()};
+$("wsh").onclick=function(){var m="I just grabbed a free seat for 'Build Your First AI Project in 60 Minutes' by NxtWave. Final-year? Join through my link: "+link();window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank")};
+$("sim").onclick=function(){S.my++;S.ch.ref++;sv();render()};
+$("rs").onclick=function(){try{localStorage.removeItem("lp3")}catch(e){}location.reload()};
+render();
+</script></main></body></html>
