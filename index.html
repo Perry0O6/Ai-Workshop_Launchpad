@@ -77,7 +77,7 @@ var S={reg:0,co:JSON.parse(JSON.stringify(SEED)),ch:{cap:96,ref:41,cre:30,tpo:18
 try{var x=localStorage.getItem("lp3");if(x)S=JSON.parse(x)}catch(e){}
 function sv(){try{localStorage.setItem("lp3",JSON.stringify(S))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
-var API="PASTE_WEB_APP_URL_HERE";function live(){return API.indexOf("http")==0}
+var API="https://script.google.com/macros/s/AKfycbyUld1CEpRiMsw4t0kE3Ab_4DwraaN4FT094Wy_VcjUhvSH1H6CtDQJ56kfn4ukt-x4/exec";function live(){return API.indexOf("http")==0}
 if(live()){S.ch={cap:0,ref:0,cre:0,tpo:0};S.co={}}
 var src=(new URLSearchParams(location.search).get("src")||"cap");if(!TG[src])src="cap";
 function tot(){var t=0;for(var k in S.ch)t+=S.ch[k];return t}
