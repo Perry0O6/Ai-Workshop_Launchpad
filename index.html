@@ -43,6 +43,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10
 <input id="co" placeholder="College name" autocomplete="organization">
 <input id="wa" placeholder="WhatsApp number" inputmode="numeric" maxlength="10">
 <button class="cta" id="go">Register free</button>
+<p class="mu" style="font-size:13px;margin:8px 0 0">We only use your number to send workshop details and a reminder.</p>
 <p class="mu" id="err" style="margin:6px 0 0"></p></div>
 
 <div class="card hide" id="done"><h2>You're in 🎉 Now bring your squad</h2>
@@ -53,7 +54,7 @@ input,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10
 <div id="tiers"></div></div>
 
 <div class="card"><h2>College leaderboard</h2>
-<p class="mu" style="margin-top:0">Top college gets its club featured on NxtWave's channels. Demo data.</p>
+<p class="mu" id="lbn" style="margin-top:0">Top college gets its club featured on NxtWave's channels. Demo data.</p>
 <div class="lb" id="lb"></div></div>
 </section>
 
@@ -76,6 +77,8 @@ var S={reg:0,co:JSON.parse(JSON.stringify(SEED)),ch:{cap:96,ref:41,cre:30,tpo:18
 try{var x=localStorage.getItem("lp3");if(x)S=JSON.parse(x)}catch(e){}
 function sv(){try{localStorage.setItem("lp3",JSON.stringify(S))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
+var API="PASTE_WEB_APP_URL_HERE";function live(){return API.indexOf("http")==0}
+if(live()){S.ch={cap:0,ref:0,cre:0,tpo:0};S.co={}}
 var src=(new URLSearchParams(location.search).get("src")||"cap");if(!TG[src])src="cap";
 function tot(){var t=0;for(var k in S.ch)t+=S.ch[k];return t}
 function render(){
@@ -92,13 +95,16 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;
 function link(){return location.origin+location.pathname+"?src=ref&ref="+S.me}
 document.addEventListener("click",function(e){var t=e.target;
 if(t.dataset.t){["s","o"].forEach(function(k){$(k).classList.toggle("hide",k!=t.dataset.t)});document.querySelectorAll(".tb").forEach(function(b){b.classList.toggle("on",b==t)})}
+if(t.dataset.t=="o")pull();
 if(t.dataset.b){S.br=t.dataset.b;sv();render()}});
 $("go").onclick=function(){var n=$("nm").value.trim(),c=$("co").value.trim(),w=$("wa").value.trim();
 if(n.length<2||c.length<3||!/^[6-9]\d{9}$/.test(w)){$("err").textContent="Please enter your name, college and a valid 10-digit WhatsApp number.";return}
 $("err").textContent="";S.me=(n.slice(0,3)+Math.floor(100+Math.random()*900)).toUpperCase().replace(/\s/g,"");
-var k="Demo: "+c;S.co[k]=(S.co[k]||0)+1;S.ch[src]++;sv();render()};
+if(live()){var rf=new URLSearchParams(location.search).get("ref")||"";fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({name:n,college:c,phone:w,branch:S.br,src:src,ref:rf,code:S.me})}).catch(function(){});setTimeout(pull,2000)}else{var k="Demo: "+c;S.co[k]=(S.co[k]||0)+1;S.ch[src]++}sv();render()};
 $("wsh").onclick=function(){var m="I just grabbed a free seat for 'Build Your First AI Project in 60 Minutes' by NxtWave. Final-year? Join through my link: "+link();window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank")};
 $("sim").onclick=function(){S.my++;S.ch.ref++;sv();render()};
 $("rs").onclick=function(){try{localStorage.removeItem("lp3")}catch(e){}location.reload()};
-render();
+function pull(){if(!live())return;fetch(API+"?t="+Date.now()).then(function(r){return r.json()}).then(function(d){S.ch=d.ch;S.co=d.co;if(S.me)S.my=d.refs[S.me]||0;sv();render()}).catch(function(){})}
+if(live()){$("sim").classList.add("hide");$("lbn").textContent="Top college gets its club featured on NxtWave's channels.";setInterval(pull,20000)}
+render();pull();
 </script></main></body></html>
